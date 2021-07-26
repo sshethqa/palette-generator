@@ -1,0 +1,5 @@
+flask
+flask-bootstrap
+flask_testing
+pytest
+pytest-cov
