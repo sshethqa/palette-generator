@@ -31,11 +31,13 @@ def name():
         "Story", "Mountain", "Dusk", "Fountain", "Foundation", "Twilight", "Snow", "Rain", "Sun", "Wood"
     ]
 
-    palette_name = [random.choice(words)]
+    name = [random.choice(words)]
     
     if random.randint(0,10) < 9:
-        palette_name.append(random.choice(words))
+        name.append(random.choice(words))
         if random.randint(0,10) == 0: 
-            palette_name.append(random.choice(words))
+            name.append(random.choice(words))
+    
+    name = list(dict.fromkeys(name)) # prevent duplicate words
 
-    return " ".join(palette_name)
+    return " ".join(name)
