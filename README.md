@@ -15,11 +15,19 @@ Stretch goals for the pipeline are:
 * Create two jobs that are triggered separately for the `main` and `development` branches:
     * Pushes to `development` should trigger tests to be run and the application to start in a 'staging' environment.
     * Pushes to `main` should trigger the application to start on a 'production' environment.
+    > One or both of these 'environments' should be running on a separate VM. Think about how you could get Jenkins to control another machine remotely.
     * Use the `HOSTNAME` environment variable to display on the webpage whether the application is running on the 'staging' or 'production' environment.
+* Configure Jenkins to notify developers when a job has been completed. This could be via email, a Teams message, a Slack message, etc.
+
+The stretch goals for this project are optional, but you are heavily encouraged to implement them!
 
 To start working on this project, please fork this repository. You are welcome to make changes to the source code as you wish. Any files relating to your Jenkins deployment pipeline need to be added to this repository.
 
-## Installation (Ubuntu)
+## Guidance
+
+Below are the instructions for getting the app running. They should aid you in creating the pipeline.
+
+### Installation (Ubuntu)
 
 Python, pip and venv must all be installed:
 
@@ -41,27 +49,31 @@ Install pip requirements:
 pip3 install -r requirements.txt
 ```
 
-## Testing 
+### Testing 
 
 To run tests and retrieve coverage:
 
 ```bash
-pytest --cov=application --cov-report=term-missing
+python3 -m pytest --cov=application --cov-report=term-missing
 ```
 
 To generate `JUnit` and `Cobertura` coverage reports:
 
 ```bash
-pytest --cov=application --junitxml=junit.xml --cov-report=xml --cov-report=term-missing
+python3 -m pytest --cov=application --junitxml=junit.xml --cov-report=xml --cov-report=term-missing
 ```
 
-## Running the App
+### Running the App
 
 To run the application on the command line, simply run:
 
 ```bash
 python3 app.py
 ```
+
+The app will be accessible via your machine's IP address on port 5000. After you click the `Generate Palette` button, you should see a colour scheme and its name displayed on the page like so:
+
+![Screenshot showing the front page of the Palette Generator web application.](images/front_page.png)
 
 The app will look for an environment variable named `HOSTNAME` and display its value at the bottom of the webpage. On Ubuntu machines, this variable is set to be the name of the host by default.
 
@@ -75,4 +87,23 @@ A script has been provided that will start the application running as a *daemon*
 
 ```bash
 ./scripts/deploy.sh
+```
+
+This will start the *daemon* service running as a `systemd` process named `palette-generator`. You can check the status of the application by running:
+
+```bash
+sudo systemctl status palette-generator
+```
+
+If the app is running correctly, you should see a response similar to this:
+
+```
+● palette-generator.service - Palette Generator
+     Loaded: loaded (/etc/systemd/system/palette-generator.service; disabled; vendor preset: enabled)
+     Active: active (running) since Wed 2021-07-28 13:33:35 UTC; 2s ago
+   Main PID: 38028 (bash)
+      Tasks: 6 (limit: 2367)
+     Memory: 74.2M
+     CGroup: /system.slice/palette-generator.service
+     ...
 ```
