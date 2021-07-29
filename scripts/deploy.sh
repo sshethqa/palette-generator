@@ -1,12 +1,15 @@
 #!/bin/bash
 
+# Script requires the user running it to have sudo privileges
+# Please edit the /etc/sudoers file accordingly using sudo visudo
+
 # Install apt Dependencies
 sudo apt-get update
 sudo apt-get install python3 python3-pip python3-venv -y
 
 # Create todo list working directory and make working directory
-sudo chown -R jenkins /opt
-install_dir=/opt/todo-list
+sudo chown -R $(whoami) /opt
+install_dir=/opt/palette-generator
 rm -rf $install_dir
 mkdir $install_dir
 cp -r . $install_dir
@@ -20,23 +23,21 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 
 # Create service script
-cat << EOF > /opt/todo-list/todo-list.service
+cat << EOF > ${install_dir}/palette-generator.service
 [Unit]
-Description=Todo List
+Description=Palette Generator
 [Service]
-User=jenkins
-WorkingDirectory=/opt/todo-list
-Environment="DATABASE_URI=$DATABASE_URI"
-Environment="SECRET_KEY=$SECRET_KEY"
-ExecStart=/bin/bash ${install_dir}/jenkins/run.sh
+User=$(whoami)
+WorkingDirectory=${install_dir}
+ExecStart=/bin/bash -c "source ${install_dir}/venv/bin/activate && gunicorn --bind=0.0.0.0:5000 --workers 2 app:app"
 [Install]
 WantedBy=multi-user.target
 EOF
 
 # Install the app service script
-sudo cp /opt/todo-list/todo-list.service /etc/systemd/system/
+sudo cp /opt/palette-generator/palette-generator.service /etc/systemd/system/
 
 # Start the systemd service
 sudo systemctl daemon-reload
-sudo systemctl stop todo-list
-sudo systemctl start todo-list
+sudo systemctl stop palette-generator
+sudo systemctl start palette-generator
