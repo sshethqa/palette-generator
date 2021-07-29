@@ -14,8 +14,11 @@ Stretch goals for the pipeline are:
 * Publish the unit test and coverage reports using plugins.
 * Create two jobs that are triggered separately for the `main` and `development` branches:
     * Pushes to `development` should trigger tests to be run and the application to start in a 'staging' environment.
+    
     * Pushes to `main` should trigger the application to start on a 'production' environment.
+
         > One or both of these 'environments' should be running on a separate VM. Think about how you could get Jenkins to control another machine remotely.
+    
     * Use the `HOSTNAME` environment variable to display on the webpage whether the application is running on the 'staging' or 'production' environment.
 * Configure Jenkins to notify developers when a job has been completed. This could be via email, a Teams message, a Slack message, etc.
 
