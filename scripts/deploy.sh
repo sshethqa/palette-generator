@@ -7,6 +7,13 @@
 sudo apt-get update
 sudo apt-get install python3 python3-pip python3-venv -y
 
+# Create and source virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install pip requirements
+pip3 install -r requirements.txt
+
 # Create todo list working directory and make working directory
 sudo chown -R $(whoami) /opt
 install_dir=/opt/palette-generator
@@ -14,13 +21,6 @@ rm -rf $install_dir
 mkdir $install_dir
 cp -r . $install_dir
 cd $install_dir
-
-# Create and source virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# Install pip requirements
-pip3 install -r requirements.txt
 
 # Create service script
 cat << EOF > ${install_dir}/palette-generator.service
@@ -41,3 +41,7 @@ sudo cp /opt/palette-generator/palette-generator.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl stop palette-generator
 sudo systemctl start palette-generator
+
+sleep 5
+
+sudo systemctl status palette-generator -l --no-pager
