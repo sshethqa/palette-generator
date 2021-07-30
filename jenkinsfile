@@ -1,0 +1,15 @@
+pipeline{
+        agent any
+        stages{
+            stage('Make Directory'){
+                steps{
+                    sh "mkdir ~/palette-generator-test"
+                }
+            }
+            stage('Make Files'){
+                steps{
+                    sh "touch ~/palette-generator-test/file1 ~/palette-generator-test/file2"
+                }
+            }
+        }
+}

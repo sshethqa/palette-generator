@@ -47,6 +47,6 @@ def test_generate_palette():
 def test_generate_name():
     with patch("random.choice") as random_choice:
         with patch("random.randint") as random_number:
-            random_choice.return_value = "test"
+            random_choice.side_effect = ["testing,", "testing!", "123!"]
             random_number.return_value = 0
-            assert generate.name() == "test test test"
+            assert generate.name() == "testing, testing! 123!"
